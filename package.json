@@ -1,0 +1,40 @@
+{
+  "name": "signal-channel",
+  "version": "0.1.0",
+  "description": "A signal channel that empowers webrtc",
+  "keywords": [],
+  "author": "Raynos <raynos2@gmail.com>",
+  "repository": "git://github.com/Raynos/signal-channel.git",
+  "main": "index",
+  "homepage": "https://github.com/Raynos/signal-channel",
+  "contributors": [
+    {
+      "name": "Jake Verbaten"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/Raynos/signal-channel/issues",
+    "email": "raynos2@gmail.com"
+  },
+  "dependencies": {
+    "shoe": "0.0.7",
+    "mux-demux": "~3.3.5",
+    "individual": "~0.1.0",
+    "header-stream": "~0.1.4",
+    "lru-cache": "~2.1.0",
+    "streams2": "~0.1.0",
+    "stream-router": "~0.1.0"
+  },
+  "devDependencies": {
+    "tap": "~0.3.1"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/Raynos/signal-channel/raw/master/LICENSE"
+    }
+  ],
+  "scripts": {
+    "test": "tap --stderr --tap ./test"
+  }
+}
