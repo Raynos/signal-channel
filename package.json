@@ -2,7 +2,16 @@
   "name": "signal-channel",
   "version": "0.1.0",
   "description": "A signal channel that empowers webrtc",
-  "keywords": [],
+  "keywords": [
+    "webrtc",
+    "p2p",
+    "peer",
+    "real-time",
+    "realtime",
+    "real",
+    "time",
+    "peer2peer"
+  ],
   "author": "Raynos <raynos2@gmail.com>",
   "repository": "git://github.com/Raynos/signal-channel.git",
   "main": "index",
