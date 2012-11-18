@@ -32,7 +32,8 @@
     "header-stream": "~0.1.4",
     "lru-cache": "~2.1.0",
     "streams2": "~0.1.0",
-    "stream-router": "~0.1.0"
+    "stream-router": "~0.1.0",
+    "sockjs-stream": "~0.1.0"
   },
   "devDependencies": {
     "tap": "~0.3.1"

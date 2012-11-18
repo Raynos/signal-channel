@@ -1,4 +1,4 @@
-var shoe = require("shoe")
+var sock = require("sockjs-stream")
     , MuxDemux = require("mux-demux")
     , Individual = require("individual")
 
@@ -11,7 +11,7 @@ function Connection(uri, namespace) {
     if (sockPool[uri]) {
         mdm = sockPool[uri]
     } else {
-        var stream = shoe(uri + "/sock")
+        var stream = sock(uri + "/sock")
             , mdm = MuxDemux()
 
         stream.pipe(mdm).pipe(stream)
