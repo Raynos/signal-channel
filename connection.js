@@ -3,11 +3,15 @@ var sock = require("sockjs-stream")
     , Individual = require("individual")
 
     , sockPool = Individual("__SIGNAL_CHANNEL_POOL", {})
+    , defaultUri = "signalchannel.co"
 
 module.exports = Connection
 
 function Connection(uri, namespace) {
     var mdm
+
+    uri = uri || defaultUri
+
     if (sockPool[uri]) {
         mdm = sockPool[uri]
     } else {
