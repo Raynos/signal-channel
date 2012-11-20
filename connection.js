@@ -3,7 +3,7 @@ var sock = require("sockjs-stream")
     , Individual = require("individual")
 
     , sockPool = Individual("__SIGNAL_CHANNEL_POOL", {})
-    , defaultUri = "signalchannel.co"
+    , defaultUri = "//signalchannel.co"
 
 module.exports = Connection
 
