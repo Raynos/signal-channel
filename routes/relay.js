@@ -9,20 +9,23 @@ var header = require("header-stream")
 
 module.exports = connection
 
-function connection(stream) {
+function connection(stream, params) {
     var headerStream = header(stream)
+        , group = params.group
 
     stream = wrap(headerStream)
 
     headerStream.on("header", function (options) {
         var remote = options.remote
             , local = options.local
-            , other = streams.get(remote + ":" + local)
+            , other = streams.get(group + ":" + remote +
+                ":" + local)
 
         if (other) {
             other.pipe(stream).pipe(other)
         } else {
-            streams.set(local + ":" + remote, stream)
+            streams.set(group + ":" + local + ":" + remote
+                , stream)
         }
     })
 }
