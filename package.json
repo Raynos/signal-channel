@@ -34,7 +34,9 @@
     "lru-cache": "~2.1.0",
     "streams2": "~0.1.0",
     "stream-router": "~0.1.0",
-    "sockjs-stream": "~0.1.1"
+    "sockjs-stream": "~0.1.1",
+    "read-write-stream": "~0.1.4",
+    "expiry-model": "~0.1.2"
   },
   "devDependencies": {
     "tap": "~0.3.1"
