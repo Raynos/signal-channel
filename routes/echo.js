@@ -1,5 +1,5 @@
 var LRU = require("lru-cache")
-    , ReadWriteStream = require("read-write-stream")
+    , through = require("through")
 
     , streams = LRU({
         max: 500
@@ -10,11 +10,11 @@ module.exports = connection
 
 function connection(stream, params) {
     var group = params.group
-        , echoStream = LRU.get(group)
+        , echoStream = streams.get(group)
 
     if (!echoStream) {
-        echoStream = ReadWriteStream()
-        group.set(group, echoStream)
+        echoStream = through()
+        streams.set(group, echoStream)
     }
 
     stream.pipe(echoStream, {

@@ -11,12 +11,12 @@ module.exports = connection
 
 function connection(stream, params) {
     var group = params.group
-        , modelStream = LRU.get(group)
+        , modelStream = streams.get(group)
 
     if (!modelStream) {
         var model = ExpiryModel()
         modelStream = model.createStream()
-        group.set(group, modelStream)
+        streams.set(group, modelStream)
     }
 
     stream.pipe(modelStream, {
