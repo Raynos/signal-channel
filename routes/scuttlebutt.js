@@ -1,6 +1,5 @@
 var LRU = require("lru-cache")
     , ExpiryModel = require("expiry-model")
-    , ReadWriteStream = require("read-write-stream")
 
     , streams = LRU({
         max: 500
