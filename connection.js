@@ -1,6 +1,7 @@
 var sock = require("sockjs-stream")
     , MuxDemux = require("mux-demux")
     , Individual = require("individual")
+    , uuid = require("node-uuid")
 
     , sockPool = Individual("__SIGNAL_CHANNEL_POOL", {})
     , defaultUri = "//signalchannel.co"
@@ -21,5 +22,5 @@ function Connection(uri, namespace) {
         stream.pipe(mdm).pipe(stream)
     }
 
-    return mdm.createStream(namespace)
+    return mdm.createStream(namespace + "/" + uuid())
 }
