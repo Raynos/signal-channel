@@ -19,11 +19,11 @@ function connection(stream) {
         stream.destroy && stream.destroy()
     })
 
-    router.addRoute("/v1/relay/:group?"
+    router.addRoute("/v1/relay/:group/*"
         , require("./routes/relay"))
-    router.addRoute("/v1/echo/:group?"
+    router.addRoute("/v1/echo/:group/*"
         , require("./routes/echo"))
-    router.addRoute("/v1/scuttlebutt/:group?"
+    router.addRoute("/v1/scuttlebutt/:group/*"
         , require("./routes/scuttlebutt"))
 
     mdm.pipe(stream).pipe(mdm)
