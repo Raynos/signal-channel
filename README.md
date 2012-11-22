@@ -2,18 +2,148 @@
 
 A signal channel that empowers webrtc
 
-Used internally by [`peer-connection-shim`][1].
+## Motivation
 
-Allows you to open connections to a signal channel server.
+WebRTC allows you to make a peer connection between two arbitary
+    browsers. To be able to do so you need to exchange session
+    descriptions that tell eachother where you are and how you
+    can open a peer connection.
 
-## Example
+To exchange these session descriptions you need a signal channel.
+    A server to which you can send descriptions and receive
+    descriptions.
 
+Once you've done the handshake through the signal channel you
+    have an open peer to peer connection and don't need to deal
+    with the signal channel server.
+
+That's exactly what this is. It's a signal channel. It's hosted
+    at `http://signalchannel.co/` and
+
+Signal channel gives you a central end point which streams so
+    you can easily make star shaped network topologies. That
+    basically means everyone connects to the centralized signal
+    channel server and the data flows through it to everyone.
+
+## Echo Example
+
+Let's say you want to send offers to other peers through the
+signal channel.
+
+```js
+var echo = require("signal-channel/echo")
+    , RemoteEvents = require("remote-events")
+
+var stream1 = echo("optional namespace")
+    , stream2 = echo("optional namespace")
+    , ee1 = new RemoteEvents()
+    , ee2 = new RemoteEvents()
+
+stream1.pipe(ee1.getStream()).pipe(stream1)
+stream2.pipe(ee2.getStream()).pipe(stream2)
+
+ee1.on("offer", function (peer, offer) {
+    console.log("got offer", offer, "from peer", peer)
+})
+
+ee2.emit("offer", "peer id #222", "this is an offer")
 ```
-var Conn = require("signal-channel/connection")
 
-    , stream = Conn("http://myserver.com", "namespace")
+Signal channel doesn't give you magic out of the box. It gives
+    you simple primitives like `echo`. Echo is just an echo
+    stream.
 
-// do stuff with stream
+Every time you connect to `echo` you get a stream which will
+    echo back anything you write to it. It also echos it to
+    everyone else connected to that namespace.
+
+It's really simple to build a pub sub system on to of the `echo`
+    stream. Note that it's not distributed (unless you take the
+    server and implement it in a distributed fashion).
+
+## [Scuttlebutt][2] example
+
+Signal channel gives you a scuttlebutt end point. This is similar
+    to the echo endpoint except its slightly more clever.
+
+Echo just takes whatever you give it and broadcasts it to all
+    the streams connected to it. Scuttlebutt takes whatever you
+    gives it. Stores it in memory and passes that update along
+    to all the other streams.
+
+Note that signal channel uses [ExpiryModel][3] which is similar
+    to [Scuttlebutt/Model][4] except it expires keys and purges
+    them from memory, making it volatile storage.
+
+```js
+// Scuttlebutt stream connects to a single scuttlebutt model
+// for that namespace and allows you to set and get state from
+// it. Note that update gets called twice, once with the state
+// from the server and once with the state your overwrite it with
+var scuttlebutt = require("signal-channel/scuttlebutt")
+    , Model = require("scuttlebutt/model")
+    , uuid = require("node-uuid")
+
+var stream3 = scuttlebutt("some other namespace")
+    , stream4 = scuttlebutt("some other namespace")
+
+var m1 = Model()
+    , m2 = Model()
+
+stream3.pipe(m1.createStream()).pipe(stream3)
+stream4.pipe(m2.createStream()).pipe(stream4)
+
+m2.on("update", function (key, value) {
+    console.log("update", key, value)
+})
+
+m1.set("some key", "some value " + uuid())
+```
+
+## Relay example
+
+The third end end point provided by signal channel is a relay
+    end point.
+
+Relay allows you to use the signal channel as a relay server.
+    You open the relay stream and then pass a header which acts
+    as a handshake that's similar to webrtc.
+
+You pass it a local and remote token and the other side is
+    supposed to pass the local and remote in the other order.
+
+When that is done signal channel will act as a relay forwarding
+    on all traffic between these two streams AND only those
+    two streams.
+
+This is being used by [peer-connection-shim][5] to emulate
+    peer connection and data channels
+
+```js
+
+// Relay streams allow you to make a direct connection to
+// another stream via a relay. This involves a handshake and
+// exchanging local and remote identifiers
+var relay = require("signal-channel/relay")
+    , header = require("header-stream")
+    , WriteStream = require("write-stream")
+
+var stream5 = header(relay("namespace is optional"))
+    , stream6 = header(relay("namespace is optional"))
+
+stream5.setHeader("local", "12")
+stream5.setHeader("remote", "22")
+stream5.writeHead()
+
+stream6.setHeader("local", "22")
+stream6.setHeader("remote", "12")
+stream6.writeHead()
+
+stream5.pipe(WriteStream(function (msg) {
+    console.log("relay message", msg)
+}))
+
+stream6.write("hello! relay")
 ```
 
 ## Installation
@@ -27,3 +157,7 @@ var Conn = require("signal-channel/connection")
 ## MIT Licenced
 
   [1]: https://github.com/Raynos/peer-connection-shim
+  [2]: https://github.com/dominictarr/scuttlebutt
+  [3]: https://github.com/Raynos/expiry-model/blob/master/index.js
+  [4]: https://github.com/dominictarr/scuttlebutt#scuttlebuttmodel
+  [5]: https://github.com/Raynos/peer-connection-shim
