@@ -27,6 +27,10 @@ Signal channel gives you a central end point which streams so
 
 ## Echo Example
 
+All the examples below work in either browser or node. You can
+    run the examples in the examples folder with `node index.js`
+    or `make build && open static/index.html`
+
 Let's say you want to send offers to other peers through the
 signal channel.
 
