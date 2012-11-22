@@ -25,27 +25,26 @@
     "url": "https://github.com/Raynos/signal-channel/issues",
     "email": "raynos2@gmail.com"
   },
-  "browserify": "connection",
+  "browserify": "connect",
   "dependencies": {
-    "shoe": "0.0.7",
-    "mux-demux": "~3.3.6",
-    "individual": "~0.1.0",
-    "header-stream": "~0.1.4",
-    "lru-cache": "~2.1.0",
-    "streams2": "~0.1.0",
-    "stream-router": "~0.1.0",
-    "sockjs-stream": "~0.1.1",
-    "expiry-model": "~0.1.2",
-    "mux-demux-logger": "~0.1.0",
-    "through": "~1.1.2",
-    "peer-connection-shim": "~0.7.0",
-    "peer-nodes": "~0.1.3",
-    "reconnect": "~0.3.1",
     "node-uuid": "~1.4.0",
-    "peer-connection-pool": "~0.2.0"
+    "shoe": "0.0.7",
+    "mux-demux-logger": "~0.1.0",
+    "mux-demux": "~3.3.6",
+    "stream-router": "~0.1.0",
+    "mux-memo": "~0.1.1",
+    "peer-connection-shim": "~0.7.0",
+    "peer-nodes": "~0.1.4",
+    "reconnect": "~0.3.1",
+    "peer-connection-pool": "~0.2.2",
+    "through": "~1.1.2",
+    "lru-cache": "~2.1.0",
+    "streams2": "~0.1.1",
+    "header-stream": "~0.1.4",
+    "expiry-model": "~0.1.2"
   },
   "devDependencies": {
-    "tap": "~0.3.1"
+    "browserify-server": "~2.1.2"
   },
   "licenses": [
     {

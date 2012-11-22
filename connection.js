@@ -1,26 +1,19 @@
-var sock = require("sockjs-stream")
-    , MuxDemux = require("mux-demux")
-    , Individual = require("individual")
-    , uuid = require("node-uuid")
+var MuxMemo = require("mux-memo")
 
-    , sockPool = Individual("__SIGNAL_CHANNEL_POOL", {})
-    , defaultUri = "//signalchannel.co"
+    /*global open:true*/
+    , open = require("./open")
+
+    , defaultUri = "//signalchannel.co/sock"
 
 module.exports = Connection
 
-function Connection(uri, namespace) {
-    var mdm
+function Connection(type) {
+    return function openConnection(mdm, namespace) {
+        if (typeof mdm === "string") {
+            namespace = mdm
+            mdm = MuxMemo(defaultUri)
+        }
 
-    uri = uri || defaultUri
-
-    if (sockPool[uri]) {
-        mdm = sockPool[uri]
-    } else {
-        var stream = sock(uri + "/sock")
-            , mdm = MuxDemux()
-
-        stream.pipe(mdm).pipe(stream)
+        return open(mdm, type, namespace)
     }
-
-    return mdm.createStream(namespace + "/" + uuid())
 }

@@ -1,0 +1,22 @@
+{
+  "name": "{{example}}",
+  "version": "0.1.0",
+  "description": "{{example}}",
+  "author": "{{author}}",
+  "main": "index",
+  "dependencies": {
+    "write-stream": "~0.4.3",
+    "scuttlebutt": "~4.1.1",
+    "header-stream": "~0.1.4",
+    "node-uuid": "~1.4.0"
+  },
+  "devDependencies": {
+    "browserify-server": "~2.1.2",
+    "nodemon": "~0.6.23",
+    "live-reload": "~0.2.0",
+    "wr": "~1.2.1"
+  },
+  "scripts": {
+    "build": "make all"
+  }
+}
