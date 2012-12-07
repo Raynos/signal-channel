@@ -25,7 +25,6 @@
     "url": "https://github.com/Raynos/signal-channel/issues",
     "email": "raynos2@gmail.com"
   },
-  "browserify": "connect",
   "dependencies": {
     "node-uuid": "~1.4.0",
     "shoe": "0.0.7",
