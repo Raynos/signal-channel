@@ -1,30 +1,69 @@
-var shoe = require("shoe")
-    , MuxDemux = require("mux-demux")
-    , Router = require("stream-router")
-    , Logger = require("mux-demux-logger")
-    , util = require("util")
+var MuxMemo = require("mux-memo")
+    , Peers = require("peer-nodes")
+    , PeerConnectionShim = require("peer-connection-shim")
+    , Network = require("peer-connection-network")
 
-    , sock = shoe(connection)
+    , echo = require("./echo")
+    , scuttlebutt = require("./scuttlebutt")
+    , relay = require("./relay")
 
-module.exports = sock
+module.exports = SignalChannel
 
-function connection(stream) {
-    var router = Router()
-        , mdm = MuxDemux(Logger(router, false))
+function SignalChannel(namespace, options) {
+    options = options || {}
 
-    mdm.on("error", function (err) {
-        console.log("error", util.inspect(err, false, 10))
-        var stream = err.stream
-        stream.end && stream.end()
-        stream.destroy && stream.destroy()
-    })
+    if (!namespace) {
+        namespace = "default@namespace"
+    }
 
-    router.addRoute("/v1/relay/:group/*"
-        , require("./routes/relay"))
-    router.addRoute("/v1/echo/:group/*"
-        , require("./routes/echo"))
-    router.addRoute("/v1/scuttlebutt/:group/*"
-        , require("./routes/scuttlebutt"))
+    if (typeof options === "string") {
+        options = { uri: options }
+    }
 
-    mdm.pipe(stream).pipe(mdm)
+    if (!options.uri) {
+        options.uri = "//signalchannel.co/sock"
+    }
+
+    if (!options.createConnection) {
+        options.createPeerConnection = createPeerConnection
+    }
+
+    var mdm = MuxMemo(options.uri)
+
+    return {
+        createPeers: createPeers
+        , createNode: createNode
+    }
+
+    function createPeers() {
+        var peerStream = scuttlebutt(mdm, namespace)
+            , peers = Peers()
+
+        peerStream
+            .pipe(peers.createStream())
+            .pipe(peerStream)
+
+        return peers
+    }
+
+    function createNode(onConnection) {
+        var networkStream = echo(mdm, namespace)
+            , node = Network(createPeerConnection)
+
+        networkStream
+            .pipe(node.createStream())
+            .pipe(networkStream)
+
+        if (onConnection) {
+            node.on("connection", onConnection)
+        }
+
+        return node
+    }
+
+    function createPeerConnection() {
+        return PeerConnectionShim({
+            stream: relay(mdm, namespace)
+        })
+    }
 }

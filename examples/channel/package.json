@@ -1,0 +1,22 @@
+{
+  "name": "{{example}}",
+  "version": "0.1.0",
+  "description": "{{example}}",
+  "author": "{{author}}",
+  "main": "index",
+  "dependencies": {
+    "through": "~2.1.0",
+    "lru-cache": "~2.2.1",
+    "mux-demux": "~3.4.0",
+    "node-uuid": "~1.4.0",
+    "write-stream": "~0.4.3"
+  },
+  "devDependencies": {
+    "browserify-server": "~2.1.4",
+    "wr": "~1.2.1",
+    "live-reload": "~0.2.0"
+  },
+  "scripts": {
+    "build": "make all"
+  }
+}

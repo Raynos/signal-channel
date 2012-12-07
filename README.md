@@ -25,6 +25,50 @@ Signal channel gives you a central end point which streams so
     basically means everyone connects to the centralized signal
     channel server and the data flows through it to everyone.
 
+## Channel example
+
+A channel consists of two parts. A list of peers in the
+    signalling channel and a network interface to open
+    connections to them.
+
+First you listen to the network, then you wait to hear about
+    peers and then open connections.
+
+For a true peer to peer system you should open connections
+    deterministically, i.e. only one of the peers should connect
+    the other should wait.
+
+```js
+var SignalChannel = require("signal-channel")
+    , uuid = require("node-uuid")
+    , WriteStream = require("write-stream")
+
+    , channel = SignalChannel("unique namespace")
+    , peers = channel.createPeers()
+    , node = channel.createNode(onConnection)
+    , id = uuid()
+
+peers.on("join", function (peer) {
+    if (peer.id <= id) {
+        // other side will open this connection
+        return
+    }
+
+    onConnection(node.connect(peer.id))
+})
+
+node.listen(id)
+peers.join({ id: id })
+
+function onConnection(stream) {
+    stream.pipe(WriteStream(function (data) {
+        console.log("got data", data, "from", stream.peerId)
+    }))
+
+    stream.write("some data to" + id)
+}
+```
+
 ## Echo Example
 
 All the examples below work in either browser or node. You can

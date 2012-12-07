@@ -1,10 +1,8 @@
-var MuxDemux = require("mux-demux")
-    , PeerConnectionShim = require("peer-connection-shim")
+var PeerConnectionShim = require("peer-connection-shim")
     , Peers = require("peer-nodes")
     , inject = require("reconnect/inject")
-    , uuid = require("node-uuid")
     , MuxMemo = require("mux-memo")
-    , PeerConnectionPool = require("peer-connection-pool")
+    , PeerConnectionNetwork = require("peer-connection-network")
 
     , echo = require("./echo")
     , scuttlebutt = require("./scuttlebutt")
@@ -20,16 +18,21 @@ function connect(options, callback) {
 
     reconnect(function (mdm) {
         var peerStream = scuttlebutt(mdm, namespace)
-            , poolStream = echo(mdm, namespace)
+            , networkStream = echo(mdm, namespace)
             , createPeerConnection = options.createConnection ||
                 createPeerConnectionShim
             , peers = Peers()
-            , pool = PeerConnectionPool(createPeerConnection)
+            , network = PeerConnectionNetwork(createPeerConnection)
 
-        peerStream.pipe(peers.createStream()).pipe(peerStream)
-        poolStream.pipe(pool.createStream()).pipe(poolStream)
+        peerStream
+            .pipe(peers.createStream())
+            .pipe(peerStream)
 
-        callback(peers, pool)
+        networkStream
+            .pipe(network.createStream())
+            .pipe(networkStream)
+
+        callback(peers, network)
 
         function createPeerConnectionShim() {
             return PeerConnectionShim({

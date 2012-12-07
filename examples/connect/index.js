@@ -22,9 +22,9 @@ connect({
     function gotStream(stream) {
         console.log("got a stream", stream)
         stream.pipe(WriteStream(function (data) {
-            console.log("got data", data)
+            console.log("got data", data, "from", stream.peerId)
         }))
 
-        stream.write("some data " + id)
+        stream.write("some data to" + id)
     }
 })
