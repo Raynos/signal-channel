@@ -1,6 +1,6 @@
 {
   "name": "signal-channel",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "A signal channel that empowers webrtc",
   "keywords": [
     "webrtc",
