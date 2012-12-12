@@ -13,16 +13,24 @@ peers.on("join", function (peer) {
         return
     }
 
-    onConnection(node.connect(peer.id))
+    onConnection(node.connect(peer.id), true)
 })
 
 node.listen(id)
 peers.join({ id: id })
 
-function onConnection(stream) {
-    stream.pipe(WriteStream(function (data) {
-        console.log("got data", data, "from", stream.peerId)
-    }))
+function onConnection(pc, opened) {
+    if (opened) {
+        return next(pc.createStream("x"))
+    }
 
-    stream.write("some data to" + id)
+    pc.on("connection", next)
+
+    function next(stream) {
+        stream.pipe(WriteStream(function (data) {
+            console.log("got data", data, "from", pc.peerId)
+        }))
+
+        stream.write("some data to" + id)
+    }
 }

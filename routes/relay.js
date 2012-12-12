@@ -22,6 +22,11 @@ function connection(stream, params) {
                 ":" + local)
 
         if (other) {
+            var otherHeader = header(other)
+            otherHeader.setHeader("open", true)
+            headerStream.setHeader("open", true)
+            otherHeader.writeHead()
+            headerStream.writeHead()
             other.pipe(stream).pipe(other)
         } else {
             streams.set(group + ":" + local + ":" + remote
