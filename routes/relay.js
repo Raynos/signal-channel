@@ -22,10 +22,9 @@ function connection(stream, params) {
                 ":" + local)
 
         if (other) {
-            var otherHeader = header(other)
-            otherHeader.setHeader("open", true)
+            other.setHeader("open", true)
             headerStream.setHeader("open", true)
-            otherHeader.writeHead()
+            other.writeHead()
             headerStream.writeHead()
             other.pipe(stream).pipe(other)
         } else {
