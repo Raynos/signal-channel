@@ -16,6 +16,8 @@ peers.on("join", function (peer) {
     onConnection(node.connect(peer.id), true)
 })
 
+console.log("listening on", id)
+
 node.listen(id)
 peers.join({ id: id })
 
@@ -31,6 +33,6 @@ function onConnection(pc, opened) {
             console.log("got data", data, "from", pc.peerId)
         }))
 
-        stream.write("some data to" + id)
+        stream.write("some data to " + pc.peerId)
     }
 }
