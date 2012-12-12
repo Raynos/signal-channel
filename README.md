@@ -38,8 +38,13 @@ For a true peer to peer system you should open connections
     deterministically, i.e. only one of the peers should connect
     the other should wait.
 
+Note that we pass in a boolean as to whether we've opened to
+    connection. The resulting peer connection we have is
+    multiplexed so we either have to listen for streams
+    that are opened or open one.
+
 ```js
-var SignalChannel = require("signal-channel")
+var SignalChannel = require("../../index")
     , uuid = require("node-uuid")
     , WriteStream = require("write-stream")
 
@@ -54,19 +59,30 @@ peers.on("join", function (peer) {
         return
     }
 
-    onConnection(node.connect(peer.id))
+    onConnection(node.connect(peer.id), true)
 })
+
+console.log("listening on", id)
 
 node.listen(id)
 peers.join({ id: id })
 
-function onConnection(stream) {
-    stream.pipe(WriteStream(function (data) {
-        console.log("got data", data, "from", stream.peerId)
-    }))
+function onConnection(pc, opened) {
+    if (opened) {
+        return next(pc.createStream("x"))
+    }
 
-    stream.write("some data to" + id)
+    pc.on("connection", next)
+
+    function next(stream) {
+        stream.pipe(WriteStream(function (data) {
+            console.log("got data", data, "from", pc.peerId)
+        }))
+
+        stream.write("some data to " + pc.peerId)
+    }
 }
+
 ```
 
 ## Echo Example
